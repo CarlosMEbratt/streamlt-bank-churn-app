@@ -8,6 +8,8 @@ import os
 from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
+
+
 # Page title
 st.set_page_config(page_title='Bank Churn App', 
                    page_icon='🤖', layout="wide", 
@@ -157,14 +159,9 @@ def form_content(username):
         mime='text/csv',
     )
 
-    # Select example data
-    st.markdown('**1.2. Use example data**')
-    example_data = st.toggle('Load example data')
-    if example_data:
-        df = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/delaney_solubility_with_descriptors.csv')
-
-
     
+
+
     
     
 
