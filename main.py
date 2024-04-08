@@ -140,7 +140,7 @@ def main():
 
     if succesful_login ==False:
         
-        st.title("Hello user. If you haven´t log in yet, please use the sidebar on the left to do so")
+        st.title("Hello user. If you haven't log in yet, please use the sidebar on the left to do so")
 
     else:     
         
