@@ -28,13 +28,17 @@ def connect_db():
 
     try:
         from pathlib import Path
-        config_path = Path("path/to/your/secrets.toml")  # Replace with the actual path
+        config_path = Path(".streamlit/secrets.toml")  # Replace with the actual path
         secrets = import_module(config_path.name)
     except ModuleNotFoundError:
         st.error("Error: Could not find secrets.toml file. Please create one with your MongoDB credentials.")
         exit()
 
-    connection_string = f"mongodb+srv://{mongo_username}:{mongo_password}@{mongo_cluster_name}.mongodb.net/?retryWrites=true&w=majority" # type: ignore
+    mongo_username = secrets.mongo_username
+    mongo_password = secrets.mongo_password
+    mongo_cluster_name = secrets.mongo_cluster_name
+
+    connection_string = f"mongodb+srv://{mongo_username}:{mongo_password}@{mongo_cluster_name}.mongodb.net/?retryWrites=true&w=majority" 
 
     try:
         client = MongoClient(connection_string)
@@ -43,8 +47,6 @@ def connect_db():
     except Exception as e:
         st.error(f"Error connecting to MongoDB: {e}")
         exit()
-
-
 
     return db
 
