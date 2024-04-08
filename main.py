@@ -156,7 +156,7 @@ def main():
     username, succesful_login=login_app()
 
     if succesful_login == False:        
-        st.title("Please use the sidebar on the left to log in or create an account.")
+        st.subheader("Please use the sidebar on the left to log in or create an account.")
 
     else:             
         st.title(f"Welcome {username} to your personal dashboard ")
