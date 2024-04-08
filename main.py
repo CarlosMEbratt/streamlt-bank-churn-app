@@ -18,9 +18,7 @@ st.set_page_config(page_title='Bank Churn App',
 
 st.title('🤖 ML Bank Churn Predictor')
 
-
-
-
+#'''Connect to the DB------------------------------------------------------------------------------------------------------------- '''
 
 
 # Connect to the DB.
@@ -164,32 +162,29 @@ def form_content(username):
 
 
     
-# Initiate the model building process
-if uploaded_file:  # type: ignore
-    st.header('Model building')
-    st.write('Model building in progress...')
+    # Initiate the model building process
+    if uploaded_file:  
+        st.header('Model building')
+        st.write('Model building in progress...')
 
-    # Placeholder for model building process
-    with st.spinner('Wait for it...'):
-        time.sleep(5)
+        # Placeholder for model building process
+        with st.spinner('Wait for it...'):
+            time.sleep(5)
 
-    st.write('Model building complete!')
+        st.write('Model building complete!')
 
-    # Display model performance
-    st.subheader('Model performance')
-    st.write('Model performance metrics...')
+        # Display model performance
+        st.subheader('Model performance')
+        st.write('Model performance metrics...')
 
-    # Placeholder for model performance metrics
-    with st.spinner('Wait for it...'):
-        time.sleep(3)
+        # Placeholder for model performance metrics
+        with st.spinner('Wait for it...'):
+            time.sleep(3)
 
-    st.write('Model performance metrics complete!')
+        st.write('Model performance metrics complete!')
     
 
-    
-    
-
-
+#'''Main Function------------------------------------------------------------------------------------------------------------- '''
     
 
 def main():
