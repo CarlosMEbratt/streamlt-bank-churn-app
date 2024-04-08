@@ -27,7 +27,7 @@ def connect_db():
     db=client["bankchurnapp"]    
     return db
 
-'''Login App Function------------------------------------------------------------------------------------------------------------- '''
+#'''Login App Function------------------------------------------------------------------------------------------------------------- '''
 
 def select_signup():
     st.session_state.form = 'signup_form'
@@ -133,9 +133,12 @@ def login_app():
     
     return st.session_state.username, st.session_state.succesful_login
 
-'''Funcionality------------------------------------------------------------------------------------------------------------- '''
+#'''Funcionality------------------------------------------------------------------------------------------------------------- '''
 def form_content(username):
-    st.markdown('**1. Use custom data**')
+    
+    st.header('Input data')
+
+    st.markdown('**Use custom data**')
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
