@@ -53,13 +53,13 @@ def login_app():
             
     if st.session_state.username != '':
         st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")   
-        logout = st.sidebar.button(label='Log Out')
-        if logout:
-            # Handle Logout Click
-            st.session_state.username = ''  # Set username to empty string
-            st.session_state.succesful_login = False  # Set successful_login to False
-            st.session_state.form = ''  # Reset form state
-            st.sidebar.success("You have successfully logged out!")
+        # logout = st.sidebar.button(label='Log Out')
+        # if logout:
+        #     # Handle Logout Click
+        #     st.session_state.username = ''  # Set username to empty string
+        #     st.session_state.succesful_login = False  # Set successful_login to False
+        #     st.session_state.form = ''  # Reset form state
+        #     st.sidebar.success("You have successfully logged out!")
 
    
 
