@@ -157,7 +157,7 @@ def main():
 
     else:             
         #st.title(f"Welcome {username} ")
-        st.subheader(f"Welcome {username} ", divider='rainbow')
+        st.subheader(f"Welcome {username} ", divider="rainbow")
 
         form_content(username)
 
