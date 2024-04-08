@@ -92,7 +92,6 @@ def login_app():
                                                 'password' : new_user_pas,
                                                 "creation_time":datetime.now()})
                         st.sidebar.success('You have successfully registered!')
-                        #st.sidebar.success(f"You are logged in as {new_username.upper()}")
                         
                         login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
                         username = login_form.text_input(label='Enter Username')
@@ -132,7 +131,40 @@ def login_app():
     
     return st.session_state.username, st.session_state.succesful_login
 
+def form_content(username):
 
+    
+    
+
+    st.sidebar.title("Navigation")
+    st.sidebar.write("Go to:")
+    page = st.sidebar.radio("",
+                            ('Home', 'Churn Prediction', 'Recommendations', 'Profile'))
+    
+    if page == 'Home':
+        st.title("Welcome to the Bank Churn App")
+        st.write("This app is designed to help you predict the churn of your bank customers and provide recommendations to retain them.")
+        st.write("Please use the sidebar on the left to navigate through the app.")
+    
+    elif page == 'Churn Prediction':
+        st.title("Churn Prediction")
+        st.write("This section will allow you to predict the churn of your bank customers.")
+        st.write("Please use the sidebar on the left to navigate through the app.")
+    
+    elif page == 'Recommendations':
+        st.title("Recommendations")
+        st.write("This section will provide you with recommendations to retain your bank customers.")
+        st.write("Please use the sidebar on the left to navigate through the app.")
+    
+    elif page == 'Profile':
+        st.title("Profile")
+        st.write("This section will display your profile information.")
+        st.write("Please use the sidebar on the left to navigate through the app.")
+        st.write(f"Username: {username}")
+        st.write(f"Email: {username.lower()}@bankchurnapp.com")
+        st.write(f"Account Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    
 
 def main():
     # Initialize Session States.
@@ -144,6 +176,8 @@ def main():
 
     else:             
         st.title(f"Welcome {username} to your personal dashboard ")
+
+        form_content(username)
 
 
 
