@@ -34,7 +34,8 @@ with st.sidebar:
                 ''', language='markdown')
                 
                 st.markdown('Libraries used:')
-                st.code('''* Pandas for data wrangling  
+                st.code('''
+                        * Pandas for data wrangling  
                         * Scikit-learn
                         * XGBoost for machine learnin
                         * Streamlit for user interface
