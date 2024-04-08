@@ -34,11 +34,7 @@ with st.sidebar:
                 ''', language='markdown')
                 
                 st.markdown('Libraries used:')
-                st.code('''- Pandas for data wrangling
-                - Scikit-learn for building a machine learning model
-                - Matplotlib and Seaborn for data visualization
-                - NumPy for numerical computing
-                - Streamlit for user interface
+                st.code('''- Pandas for data wrangling, Scikit-learn, XGBoost for machine learnin, Streamlit for user interface
                 ''', language='markdown')
 
 #'''Connect to the DB------------------------------------------------------------------------------------------------------------- '''
