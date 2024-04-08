@@ -55,7 +55,7 @@ def login_app():
             
     if st.session_state.username != '':
         st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")   
-        logout = st.sidebar.button(label='Log Out')
+        
         if logout:
             # Handle Logout Click
             st.session_state.username = ''  # Set username to empty string
@@ -145,6 +145,7 @@ def form_content(username):
     
 
 
+
     
 
 def main():
@@ -156,7 +157,7 @@ def main():
         st.subheader("Please use the sidebar on the left to log in or create an account.")
 
     else:             
-        st.header(f"Welcome {username} ")
+        st.header(f"Welcome {username} !")
 
         form_content(username)
 
