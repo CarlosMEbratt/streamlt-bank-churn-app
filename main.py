@@ -17,8 +17,8 @@ st.title('🤖 ML Bank Churn Predictor + Recomendations')
 
 def connect_db():
 
-    #password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
-    connection_string = f"mongodb+srv://carlosmebratt:{os.environ.get('MONGO_PASSWORD')}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+    password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
+    connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(connection_string)
     db=client["bankchurnapp"]
 
