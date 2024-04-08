@@ -18,10 +18,29 @@ st.set_page_config(page_title='Bank Churn App',
 
 st.title('🤖 ML Bank Churn Predictor')
 
+with st.sidebar:
+
+    with st.expander('About this app'):
+                st.markdown('**What can this app do?**')
+                st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
+
+                st.markdown('**How to use the app?**')
+                st.warning('To engage with the app, go to the sidebar and 1. Select a data set and 2. Adjust the model parameters by adjusting the various slider widgets. As a result, this would initiate the ML model building process, display the model results as well as allowing users to download the generated models and accompanying data.')
+
+                st.markdown('**Under the hood**')
+                st.markdown('Data sets:')
+                st.code('''- Drug solubility data set
+                ''', language='markdown')
+                
+                st.markdown('Libraries used:')
+                st.code('''- Pandas for data wrangling
+                - Scikit-learn for building a machine learning model
+                - Altair for chart creation
+                - Streamlit for user interface
+                ''', language='markdown')
+
 #'''Connect to the DB------------------------------------------------------------------------------------------------------------- '''
 
-
-# Connect to the DB.
 @st.cache_resource
 
 def connect_db():
@@ -72,24 +91,6 @@ def login_app():
     # Initialize Sing In or Sign Up forms
     if st.session_state.form == 'signup_form' and st.session_state.username == '':
 
-        with st.expander('About this app'):
-            st.markdown('**What can this app do?**')
-            st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
-
-            st.markdown('**How to use the app?**')
-            st.warning('To engage with the app, go to the sidebar and 1. Select a data set and 2. Adjust the model parameters by adjusting the various slider widgets. As a result, this would initiate the ML model building process, display the model results as well as allowing users to download the generated models and accompanying data.')
-
-            st.markdown('**Under the hood**')
-            st.markdown('Data sets:')
-            st.code('''- Drug solubility data set
-            ''', language='markdown')
-            
-            st.markdown('Libraries used:')
-            st.code('''- Pandas for data wrangling
-            - Scikit-learn for building a machine learning model
-            - Altair for chart creation
-            - Streamlit for user interface
-            ''', language='markdown')
     
         signup_form = st.sidebar.form(key='signup_form', clear_on_submit=True)
         new_username = signup_form.text_input(label='Enter Username*')
