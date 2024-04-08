@@ -1,7 +1,10 @@
 import streamlit as st
-import os
 from pymongo import MongoClient
 from datetime import datetime
+
+from dotenv import load_dotenv, find_dotenv
+import os
+load_dotenv(find_dotenv())
 
 
 # Page title
@@ -10,6 +13,7 @@ st.set_page_config(page_title='Bank Churn App',
                    initial_sidebar_state="expanded")
 
 st.title('🤖 ML Bank Churn Predictor + Recomendations')
+
 
 
 # Connect to the DB.
@@ -124,7 +128,6 @@ def login_app():
         signup_request = st.sidebar.button('Create Account', on_click=select_signup)  
 
     return st.session_state.username, st.session_state.succesful_login
-
 
 
 
