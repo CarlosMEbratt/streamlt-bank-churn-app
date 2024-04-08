@@ -1,11 +1,11 @@
+
 import streamlit as st
-from pymongo import MongoClient
 from datetime import datetime
 
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv, find_dotenv #Used for import the function to load .env file
 import os
-load_dotenv(find_dotenv())
-
+from pymongo import MongoClient #Used to create the connection
+load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
 # Page title
 st.set_page_config(page_title='Bank Churn App', 
@@ -20,8 +20,8 @@ st.title('🤖 ML Bank Churn Predictor + Recomendations')
 @st.cache_resource
 
 def connect_db():
-    #password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
-    connection_string = f"mongodb+srv://carlosmebratt:ebratt1986@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+    password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
+    connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(connection_string)
     db=client["bankchurnapp"]    
     return db
