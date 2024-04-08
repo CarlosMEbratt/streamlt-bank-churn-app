@@ -132,37 +132,21 @@ def login_app():
     return st.session_state.username, st.session_state.succesful_login
 
 def form_content(username):
+    st.sidebar.title('User Profile')
+    st.sidebar.write(f"Welcome {username}")
+    st.sidebar.write('User Profile')
+    st.sidebar.write('Settings')
+    st.sidebar.write('Help')
+    st.sidebar.write('Logout')
+    st.sidebar.write('About')
+    st.sidebar.write('Contact')
+    st.sidebar.write('Terms & Conditions')
+    st.sidebar.write('Privacy Policy
 
     
     
+    
 
-    st.sidebar.title("Navigation")
-    st.sidebar.write("Go to:")
-    page = st.sidebar.radio("",
-                            ('Home', 'Churn Prediction', 'Recommendations', 'Profile'))
-    
-    if page == 'Home':
-        st.title("Welcome to the Bank Churn App")
-        st.write("This app is designed to help you predict the churn of your bank customers and provide recommendations to retain them.")
-        st.write("Please use the sidebar on the left to navigate through the app.")
-    
-    elif page == 'Churn Prediction':
-        st.title("Churn Prediction")
-        st.write("This section will allow you to predict the churn of your bank customers.")
-        st.write("Please use the sidebar on the left to navigate through the app.")
-    
-    elif page == 'Recommendations':
-        st.title("Recommendations")
-        st.write("This section will provide you with recommendations to retain your bank customers.")
-        st.write("Please use the sidebar on the left to navigate through the app.")
-    
-    elif page == 'Profile':
-        st.title("Profile")
-        st.write("This section will display your profile information.")
-        st.write("Please use the sidebar on the left to navigate through the app.")
-        st.write(f"Username: {username}")
-        st.write(f"Email: {username.lower()}@bankchurnapp.com")
-        st.write(f"Account Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     
 
