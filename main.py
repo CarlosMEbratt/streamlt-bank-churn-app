@@ -140,10 +140,13 @@ def form_content(username):
     
     st.header('Input data')
 
-    st.markdown('**Use custom data**')
+    st.markdown('**1. Use custom data**')
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
+
+    # Select example data
+    st.markdown('**2. Use example data**')
 
 
     # Download example data
