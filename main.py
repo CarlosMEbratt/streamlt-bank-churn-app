@@ -166,6 +166,7 @@ def form_content(username):
         df = pd.read_csv(uploaded_file, index_col=False)
 
         st.write(df.head())
+        
 
     # Select example data
     st.markdown('**2. Use example data**')
