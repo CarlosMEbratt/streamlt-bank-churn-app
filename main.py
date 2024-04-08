@@ -37,7 +37,7 @@ with st.sidebar:
                 st.code('''
                         * Pandas for data wrangling  
                         * Scikit-learn
-                        * XGBoost for machine learnin
+                        * XGBoost for machine learning
                         * Streamlit for user interface
                 ''', language='markdown')
 
@@ -164,6 +164,8 @@ def form_content(username):
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
+
+        st.write(df.head())
 
     # Select example data
     st.markdown('**2. Use example data**')
