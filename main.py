@@ -1,6 +1,7 @@
 
 import streamlit as st
 from datetime import datetime
+import pandas as pd
 
 from dotenv import load_dotenv, find_dotenv #Used for import the function to load .env file
 import os
@@ -12,7 +13,7 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-st.title('🤖 ML Bank Churn Predictor + Recomendations')
+st.title('🤖 ML Bank Churn Predictor')
 
 
 
@@ -26,6 +27,7 @@ def connect_db():
     db=client["bankchurnapp"]    
     return db
 
+'''Login App Function------------------------------------------------------------------------------------------------------------- '''
 
 def select_signup():
     st.session_state.form = 'signup_form'
@@ -131,8 +133,12 @@ def login_app():
     
     return st.session_state.username, st.session_state.succesful_login
 
-    
-    
+'''Funcionality------------------------------------------------------------------------------------------------------------- '''
+def form_content(username):
+    st.markdown('**1. Use custom data**')
+    uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file, index_col=False)
     
 
 
