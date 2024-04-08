@@ -9,7 +9,7 @@ import os
 from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
-
+# '''Page sidebar------------------------------------------------------------------------------------------------------------- '''
 
 # Page title
 st.set_page_config(page_title='Bank Churn App', 
@@ -18,6 +18,7 @@ st.set_page_config(page_title='Bank Churn App',
 
 st.title('🤖 ML Bank Churn Predictor')
 
+# Page about app
 with st.sidebar:
 
     with st.expander('About this app'):
@@ -25,17 +26,18 @@ with st.sidebar:
                 st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
 
                 st.markdown('**How to use the app?**')
-                st.warning('To engage with the app, go to the sidebar and 1. Select a data set and 2. Adjust the model parameters by adjusting the various slider widgets. As a result, this would initiate the ML model building process, display the model results as well as allowing users to download the generated models and accompanying data.')
+                st.warning('To engage with the app, please login or create an account and then 1. Select a data set and 2. Click on "Run the model". As a result, this would initiate the ML model and data processing.')
 
                 st.markdown('**Under the hood**')
                 st.markdown('Data sets:')
-                st.code('''- Drug solubility data set
+                st.code('''- You can upload your own data set or use the example data set provided in the app.
                 ''', language='markdown')
                 
                 st.markdown('Libraries used:')
                 st.code('''- Pandas for data wrangling
                 - Scikit-learn for building a machine learning model
-                - Altair for chart creation
+                - Matplotlib and Seaborn for data visualization
+                - NumPy for numerical computing
                 - Streamlit for user interface
                 ''', language='markdown')
 
