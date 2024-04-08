@@ -1,4 +1,5 @@
 
+import time
 import streamlit as st
 from datetime import datetime
 import pandas as pd
@@ -16,6 +17,26 @@ st.set_page_config(page_title='Bank Churn App',
                    initial_sidebar_state="expanded")
 
 st.title('🤖 ML Bank Churn Predictor')
+
+with st.expander('About this app'):
+  st.markdown('**What can this app do?**')
+  st.info('This app allow users to build a machine learning (ML) model in an end-to-end workflow. Particularly, this encompasses data upload, data pre-processing, ML model building and post-model analysis.')
+
+  st.markdown('**How to use the app?**')
+  st.warning('To engage with the app, go to the sidebar and 1. Select a data set and 2. Adjust the model parameters by adjusting the various slider widgets. As a result, this would initiate the ML model building process, display the model results as well as allowing users to download the generated models and accompanying data.')
+
+  st.markdown('**Under the hood**')
+  st.markdown('Data sets:')
+  st.code('''- Drug solubility data set
+  ''', language='markdown')
+  
+  st.markdown('Libraries used:')
+  st.code('''- Pandas for data wrangling
+- Scikit-learn for building a machine learning model
+- Altair for chart creation
+- Streamlit for user interface
+  ''', language='markdown')
+
 
 
 
@@ -121,11 +142,7 @@ def login_app():
             if login:
                 st.sidebar.error("Username or Password is incorrect. Please try again or create an account.")
         
-    # else:
-    #     logout = st.sidebar.button(label='Log Out')
-    #     if logout:
-    #         user_update('',False)
-    #         st.session_state.form = ''
+    
 
        
 
@@ -162,8 +179,29 @@ def form_content(username):
         mime='text/csv',
     )
 
-    
 
+    
+# Initiate the model building process
+if uploaded_file:  # type: ignore
+    st.header('Model building')
+    st.write('Model building in progress...')
+
+    # Placeholder for model building process
+    with st.spinner('Wait for it...'):
+        time.sleep(5)
+
+    st.write('Model building complete!')
+
+    # Display model performance
+    st.subheader('Model performance')
+    st.write('Model performance metrics...')
+
+    # Placeholder for model performance metrics
+    with st.spinner('Wait for it...'):
+        time.sleep(3)
+
+    st.write('Model performance metrics complete!')
+    
 
     
     
