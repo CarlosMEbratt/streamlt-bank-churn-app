@@ -131,19 +131,7 @@ def login_app():
     
     return st.session_state.username, st.session_state.succesful_login
 
-def form_content(username):
-    st.sidebar.title('User Profile')
-    st.sidebar.write(f"Welcome {username}")
-    st.sidebar.write('User Profile')
-    st.sidebar.write('Settings')
-    st.sidebar.write('Help')
-    st.sidebar.write('Logout')
-    st.sidebar.write('About')
-    st.sidebar.write('Contact')
-    st.sidebar.write('Terms & Conditions')
-    st.sidebar.write('Privacy Policy
-
-    
+  
     
     
 
