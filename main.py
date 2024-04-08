@@ -55,7 +55,7 @@ def login_app():
             
     if st.session_state.username != '':
         st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")   
-        
+        logout = st.sidebar.button(label='Log Out')
         if logout:
             # Handle Logout Click
             st.session_state.username = ''  # Set username to empty string
@@ -119,11 +119,11 @@ def login_app():
             if login:
                 st.sidebar.error("Username or Password is incorrect. Please try again or create an account.")
         
-    else:
-        logout = st.sidebar.button(label='Log Out')
-        if logout:
-            user_update('',False)
-            st.session_state.form = ''
+    # else:
+    #     logout = st.sidebar.button(label='Log Out')
+    #     if logout:
+    #         user_update('',False)
+    #         st.session_state.form = ''
 
        
 
@@ -143,7 +143,7 @@ def form_content(username):
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
     
-
+    
 
 
     
