@@ -156,8 +156,7 @@ def main():
         st.subheader("Please use the sidebar on the left to log in or create an account.")
 
     else:             
-        #st.title(f"Welcome {username} ")
-        st.subheader(f"Welcome {username} ", divider="rainbow")
+        st.header(f"Welcome {username} ")
 
         form_content(username)
 
