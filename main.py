@@ -18,9 +18,7 @@ st.title('🤖 ML Bank Churn Predictor + Recomendations')
 def connect_db():
 
     #password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
-    #connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
-
-    connection_string = f"mongodb+srv://carlosmebratt:ebratt1986@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+    connection_string = f"mongodb+srv://carlosmebratt:{os.environ.get('MONGO_PASSWORD')}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(connection_string)
     db=client["bankchurnapp"]
 
@@ -124,12 +122,9 @@ def login_app():
             st.session_state.form = ''
 
        
-
     # 'Create Account' button
     if st.session_state.username == "" and st.session_state.form != 'signup_form':
-        signup_request = st.sidebar.button('Create Account', on_click=select_signup)
-    
-    
+        signup_request = st.sidebar.button('Create Account', on_click=select_signup)  
 
     return st.session_state.username, st.session_state.succesful_login
 
@@ -141,15 +136,13 @@ def main():
     succesful_login=False
     username, succesful_login=login_app()
 
+    if succesful_login == False:        
+        st.title("Please use the sidebar on the left to log in or create an account.")
 
-
-    if succesful_login == False:
-        
-        st.title("Hello user. If you haven't logged in yet, please use the sidebar on the left to do so")
-
-    else:     
-        
+    else:             
         st.title(f"Welcome {username} to your personal dashboard ")
+
+
 
 # Call the main function
 if __name__ == '__main__':
