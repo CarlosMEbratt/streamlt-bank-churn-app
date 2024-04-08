@@ -65,8 +65,7 @@ def login_app():
 
     # Initialize Sing In or Sign Up forms
     if st.session_state.form == 'signup_form' and st.session_state.username == '':
-        
-        
+    
         signup_form = st.sidebar.form(key='signup_form', clear_on_submit=True)
         new_username = signup_form.text_input(label='Enter Username*')
         new_user_email = signup_form.text_input(label='Enter Email Address*')
@@ -132,7 +131,7 @@ def login_app():
     
     return st.session_state.username, st.session_state.succesful_login
 
-  
+    
     
     
 
