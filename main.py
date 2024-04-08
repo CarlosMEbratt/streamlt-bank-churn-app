@@ -41,7 +41,7 @@ def login_app():
     db = connect_db()
     credentials_db=db["credentials"]
 
-    #st.session_state.succesful_login=False
+    
     # Initialize Session States.
     if 'username' not in st.session_state:
         st.session_state.username = ''
@@ -52,8 +52,7 @@ def login_app():
         st.session_state.succesful_login = False    
             
     if st.session_state.username != '':
-        st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")
-        
+        st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")        
 
    
 
@@ -92,29 +91,25 @@ def login_app():
                         username = login_form.text_input(label='Enter Username')
                         password = login_form.text_input(label='Enter Password', type='password')
                         
-                        del new_user_pas, user_pas_conf
-                        
+                        del new_user_pas, user_pas_conf                        
     
     
     elif st.session_state.username == '':
         login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
         username = login_form.text_input(label='Enter Username')
-        password = login_form.text_input(label='Enter Password', type='password')
-        
+        password = login_form.text_input(label='Enter Password', type='password')        
         
 
         if credentials_db.find_one({'username' : username, 'password' : password}):
             login = login_form.form_submit_button(label='Sign In', on_click=user_update(username,True))
             if login:
-                st.sidebar.success(f"You are logged in as {username.upper()}")
-                
+                st.sidebar.success(f"You are logged in as {username.upper()}")                
                 
                 del password
         else:
             login = login_form.form_submit_button(label='Sign In')
             if login:
                 st.sidebar.error("Username or Password is incorrect. Please try again or create an account.")
-
         
     else:
         logout = st.sidebar.button(label='Log Out')
@@ -123,10 +118,11 @@ def login_app():
             st.session_state.form = ''
 
        
+
     # 'Create Account' button
     if st.session_state.username == "" and st.session_state.form != 'signup_form':
         signup_request = st.sidebar.button('Create Account', on_click=select_signup)  
-
+    
     return st.session_state.username, st.session_state.succesful_login
 
 
