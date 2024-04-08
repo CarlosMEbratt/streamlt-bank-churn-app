@@ -1,3 +1,4 @@
+from importlib import import_module
 import streamlit as st
 import os
 from pymongo import MongoClient
@@ -19,9 +20,32 @@ def connect_db():
     #password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
     #connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
 
-    connection_string = f"mongodb+srv://carlosmebratt:ebratt1986@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
-    client = MongoClient(connection_string)
-    db=client["bankchurnapp"]
+    # connection_string = f"mongodb+srv://carlosmebratt:ebratt1986@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+    # client = MongoClient(connection_string)
+    # db=client["bankchurnapp"]
+
+   
+
+    try:
+        from pathlib import Path
+        config_path = Path("path/to/your/secrets.toml")  # Replace with the actual path
+        secrets = import_module(config_path.name)
+    except ModuleNotFoundError:
+        st.error("Error: Could not find secrets.toml file. Please create one with your MongoDB credentials.")
+        exit()
+
+    connection_string = f"mongodb+srv://{mongo_username}:{mongo_password}@{mongo_cluster_name}.mongodb.net/?retryWrites=true&w=majority" # type: ignore
+
+    try:
+        client = MongoClient(connection_string)
+        db = client.your_database_name  # Replace with your database name
+        st.success("Connected to MongoDB successfully!")
+    except Exception as e:
+        st.error(f"Error connecting to MongoDB: {e}")
+        exit()
+
+
+
     return db
 
 
