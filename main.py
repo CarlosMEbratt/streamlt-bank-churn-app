@@ -182,6 +182,8 @@ def form_content(username):
             time.sleep(3)
 
         st.write('Model performance metrics complete!')
+
+    
     
 
 #'''Main Function------------------------------------------------------------------------------------------------------------- '''
@@ -194,6 +196,25 @@ def main():
 
     if succesful_login == False:        
         st.subheader("Please use the sidebar on the left to log in or create an account.")
+
+        with st.expander('About this app'):
+            st.markdown('**What can this app do?**')
+            st.info('This app allow users to build a machine learning (ML) model in an end-to-end workflow. Particularly, this encompasses data upload, data pre-processing, ML model building and post-model analysis.')
+
+            st.markdown('**How to use the app?**')
+            st.warning('To engage with the app, go to the sidebar and 1. Select a data set and 2. Adjust the model parameters by adjusting the various slider widgets. As a result, this would initiate the ML model building process, display the model results as well as allowing users to download the generated models and accompanying data.')
+
+            st.markdown('**Under the hood**')
+            st.markdown('Data sets:')
+            st.code('''- Drug solubility data set
+            ''', language='markdown')
+            
+            st.markdown('Libraries used:')
+            st.code('''- Pandas for data wrangling
+            - Scikit-learn for building a machine learning model
+            - Altair for chart creation
+            - Streamlit for user interface
+            ''', language='markdown')
 
     else:             
         st.header(f"Welcome {username} !")
