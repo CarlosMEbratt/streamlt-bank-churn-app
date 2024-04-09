@@ -185,7 +185,7 @@ def form_content(username):
             time.sleep(3)
 
         #st.write('Customer predictions are now complete!')
-        st..markdown(''':blue[Customer predictions are now complete!]''')
+        st.markdown(''':blue[Customer predictions are now complete!]''')
 
         st.dataframe(data=df, use_container_width=True)
 
