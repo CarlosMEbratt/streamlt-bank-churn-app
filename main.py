@@ -16,7 +16,7 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-st.title('🤖 ML Bank Churn Predictor')
+st.title('Machine Learning App for Bank Churn Prediction')
 
 # Page about app
 with st.sidebar:
@@ -166,7 +166,7 @@ def form_content(username):
         df = pd.read_csv(uploaded_file, index_col=False)
 
         st.write(df.head())
-        
+
 
     # Select example data
     st.markdown('**2. Use example data**')
