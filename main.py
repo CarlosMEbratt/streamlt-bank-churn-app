@@ -17,7 +17,7 @@ st.set_page_config(page_title='Bank Churn App',
                    initial_sidebar_state="expanded")
 
 st.title('Machine Learning App for Bank Churn Prediction')
-st.image('/images/image1.png', caption='Churn app')
+st.image('image1.png', caption='Churn app')
 
 # Page about app
 with st.sidebar:
