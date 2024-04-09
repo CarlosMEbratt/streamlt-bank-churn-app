@@ -232,7 +232,8 @@ def main():
     else:
         with st.sidebar:             
             st.header(f"Welcome {username} !")
-            form_content(username)
+        
+        form_content(username)
 
     
     with st.sidebar:
