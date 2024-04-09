@@ -16,7 +16,8 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-
+with st.sidebar:
+    st.markdown(''':red[Log in to access the app]''')
 
 # # Page about app
 # with st.sidebar:
@@ -234,7 +235,7 @@ def main():
     
     with st.sidebar:
 
-        with st.expander('About this app'):
+        with st.expander('About this app / Instructions'):
                     st.markdown('**What can this app do?**')
                     st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
 
