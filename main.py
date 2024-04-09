@@ -18,28 +18,28 @@ st.set_page_config(page_title='Bank Churn App',
 
 
 
-# Page about app
-with st.sidebar:
+# # Page about app
+# with st.sidebar:
 
-    with st.expander('About this app'):
-                st.markdown('**What can this app do?**')
-                st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
+#     with st.expander('About this app'):
+#                 st.markdown('**What can this app do?**')
+#                 st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
 
-                st.markdown('**How to use the app?**')
-                st.warning('To engage with the app, please login or create an account and then 1. Select a data set and 2. Click on "Run the model". As a result, this would initiate the ML model and data processing.')
+#                 st.markdown('**How to use the app?**')
+#                 st.warning('To engage with the app, please login or create an account and then 1. Select a data set and 2. Click on "Run the model". As a result, this would initiate the ML model and data processing.')
 
-                st.markdown('**Under the hood**')
-                st.markdown('Data sets:')
-                st.code('''- You can upload your own data set or use the example data set provided in the app.
-                ''', language='markdown')
+#                 st.markdown('**Under the hood**')
+#                 st.markdown('Data sets:')
+#                 st.code('''- You can upload your own data set or use the example data set provided in the app.
+#                 ''', language='markdown')
                 
-                st.markdown('Libraries used:')
-                st.code('''
-                        * Pandas for data wrangling  
-                        * Scikit-learn
-                        * XGBoost for machine learning
-                        * Streamlit for user interface
-                ''', language='markdown')
+#                 st.markdown('Libraries used:')
+#                 st.code('''
+#                         * Pandas for data wrangling  
+#                         * Scikit-learn
+#                         * XGBoost for machine learning
+#                         * Streamlit for user interface
+#                 ''', language='markdown')
 
 #'''Connect to the DB------------------------------------------------------------------------------------------------------------- '''
 
@@ -232,7 +232,27 @@ def main():
         form_content(username)
 
     
+    with st.sidebar:
 
+        with st.expander('About this app'):
+                    st.markdown('**What can this app do?**')
+                    st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
+
+                    st.markdown('**How to use the app?**')
+                    st.warning('To engage with the app, please login or create an account and then 1. Select a data set and 2. Click on "Run the model". As a result, this would initiate the ML model and data processing.')
+
+                    st.markdown('**Under the hood**')
+                    st.markdown('Data sets:')
+                    st.code('''- You can upload your own data set or use the example data set provided in the app.
+                    ''', language='markdown')
+                    
+                    st.markdown('Libraries used:')
+                    st.code('''
+                            * Pandas for data wrangling  
+                            * Scikit-learn
+                            * XGBoost for machine learning
+                            * Streamlit for user interface
+                    ''', language='markdown')
 
 # Call the main function
 if __name__ == '__main__':
