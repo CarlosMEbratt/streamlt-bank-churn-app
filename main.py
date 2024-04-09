@@ -165,7 +165,8 @@ def form_content(username):
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
 
-        st.write(df.head())
+        #st.write(df.head())
+        st.dataframe(df)
 
 
     # Select example data
