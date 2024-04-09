@@ -81,7 +81,8 @@ def login_app():
         st.session_state.succesful_login = False    
             
     if st.session_state.username != '':
-        st.sidebar.write(f"You are logged in")
+        st.sidebar.markdown(''':blue[You are logged in]''')
+        #st.sidebar.write(f"You are logged in")
         #st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")  
         logout = st.sidebar.button(label='Log Out')
         if logout:
