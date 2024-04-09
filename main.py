@@ -16,8 +16,7 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-st.title('Machine Learning App for Bank Churn Prediction')
-st.image('image2.png')
+
 
 # Page about app
 with st.sidebar:
@@ -221,6 +220,9 @@ def main():
     succesful_login=False
     username, succesful_login=login_app()
 
+    st.title('Machine Learning App for Bank Churn Prediction')
+    
+
     if succesful_login == False:        
         st.subheader("Please use the sidebar on the left to log in or create an account.")
 
@@ -229,6 +231,7 @@ def main():
 
         form_content(username)
 
+    st.image('image1.png')
 
 
 # Call the main function
