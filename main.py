@@ -16,8 +16,9 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-with st.sidebar:
-    st.markdown(''':red[Please Log in or create an account to access the app]''')
+if st.session_state.username != '':
+    with st.sidebar:
+        st.markdown(''':red[Please Log in or create an account to access the app]''')
 
 # # Page about app
 # with st.sidebar:
