@@ -1,4 +1,3 @@
-
 import time
 import streamlit as st
 from datetime import datetime
@@ -9,37 +8,13 @@ import os
 from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
-# '''Page sidebar------------------------------------------------------------------------------------------------------------- '''
+#'''Streamlit settings------------------------------------------------------------------------------------------------------------- '''
 
 # Page title
 st.set_page_config(page_title='Bank Churn App', 
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-
-
-# # Page about app
-# with st.sidebar:
-
-#     with st.expander('About this app'):
-#                 st.markdown('**What can this app do?**')
-#                 st.info('This app allow users to load a bank .csv file and use it to build a machine learning model to predict churn. The app also recomends actions to reduce churn.')
-
-#                 st.markdown('**How to use the app?**')
-#                 st.warning('To engage with the app, please login or create an account and then 1. Select a data set and 2. Click on "Run the model". As a result, this would initiate the ML model and data processing.')
-
-#                 st.markdown('**Under the hood**')
-#                 st.markdown('Data sets:')
-#                 st.code('''- You can upload your own data set or use the example data set provided in the app.
-#                 ''', language='markdown')
-                
-#                 st.markdown('Libraries used:')
-#                 st.code('''
-#                         * Pandas for data wrangling  
-#                         * Scikit-learn
-#                         * XGBoost for machine learning
-#                         * Streamlit for user interface
-#                 ''', language='markdown')
 
 #'''Connect to the DB------------------------------------------------------------------------------------------------------------- '''
 
@@ -168,7 +143,7 @@ def form_content(username):
         df = pd.read_csv(uploaded_file, index_col=False)
 
         #st.write(df.head())
-        st.dataframe(data=df, use_container_width=True)
+        #st.dataframe(data=df, use_container_width=True)
 
 
     # Select example data
@@ -192,7 +167,7 @@ def form_content(username):
     
     # Initiate the model building process
     if uploaded_file:  
-        st.header('Model building')
+        st.subheader('Model building')
         st.write('Model building in progress...')
 
         # Placeholder for model building process
@@ -202,14 +177,16 @@ def form_content(username):
         st.write('Model building complete!')
 
         # Display model performance
-        st.subheader('Model performance')
-        st.write('Model performance metrics...')
+        st.subheader('Model Processing')
+        st.write('Building predictions...')
 
         # Placeholder for model performance metrics
         with st.spinner('Wait for it...'):
             time.sleep(3)
 
-        st.write('Model performance metrics complete!')
+        st.write('Customer predictions are now complete!')
+
+        st.dataframe(data=df, use_container_width=True)
 
     
     
