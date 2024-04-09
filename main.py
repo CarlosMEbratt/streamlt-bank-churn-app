@@ -229,9 +229,10 @@ def main():
         st.subheader("Please use the sidebar on the left to log in or create an account.")
         st.image('image1.png')
 
-    else:             
-        st.header(f"Welcome {username} !")
-        form_content(username)
+    else:
+        with st.sidebar:             
+            st.header(f"Welcome {username} !")
+            form_content(username)
 
     
     with st.sidebar:
