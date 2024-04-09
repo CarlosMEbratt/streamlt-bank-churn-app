@@ -17,7 +17,7 @@ st.set_page_config(page_title='Bank Churn App',
                    initial_sidebar_state="expanded")
 
 with st.sidebar:
-    st.markdown(''':red[Log in to access the app]''')
+    st.markdown(''':red[Please Log in or create an account to access the app]''')
 
 # # Page about app
 # with st.sidebar:
