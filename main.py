@@ -92,7 +92,7 @@ def login_app():
 
     if st.session_state.username == '':
         with st.sidebar:
-            st.markdown(''':red[Please Log in or create an account to access the app]''')
+            st.markdown(''':green[Please Log in or Create an account to access the app]''')
 
     # Initialize Sing In or Sign Up forms
     if st.session_state.form == 'signup_form' and st.session_state.username == '':
