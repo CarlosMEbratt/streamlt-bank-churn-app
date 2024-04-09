@@ -166,7 +166,7 @@ def form_content(username):
         df = pd.read_csv(uploaded_file, index_col=False)
 
         #st.write(df.head())
-        st.dataframe(data=df, width=None, height=None, use_container_width=False, hide_index=None, column_order=None, column_config=None)
+        st.dataframe(data=df, use_container_width=True)
 
 
     # Select example data
