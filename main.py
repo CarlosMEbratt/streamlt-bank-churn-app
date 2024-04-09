@@ -16,7 +16,9 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-
+if st.session_state.username == '':
+        with st.sidebar:
+            st.markdown(''':green[Please Log in or Create an account to access the app]''')
 
 # # Page about app
 # with st.sidebar:
@@ -90,9 +92,7 @@ def login_app():
             st.session_state.form = ''  # Reset form state
             st.sidebar.success("You have successfully logged out!")
 
-    if st.session_state.username == '':
-        with st.sidebar:
-            st.markdown(''':green[Please Log in or Create an account to access the app]''')
+    
 
     # Initialize Sing In or Sign Up forms
     if st.session_state.form == 'signup_form' and st.session_state.username == '':
