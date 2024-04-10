@@ -116,9 +116,7 @@ def login_app():
             if login:
                 st.sidebar.success(f"You are logged in as {username.upper()}")     
 
-                with st.sidebar("Wait for it..."):
-                    with st.spinner('Initializing...'):
-                        time.sleep(2)           
+                      
                 
                 del password
         else:
