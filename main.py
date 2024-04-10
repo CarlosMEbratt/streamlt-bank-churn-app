@@ -158,14 +158,8 @@ def form_content(username):
     st.markdown('**1. Use custom data**')
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
-        #df = pd.read_csv(uploaded_file, index_col=False)
+        df = pd.read_csv(uploaded_file, index_col=False)      
         
-        # Load the saved model
-        @st.cache(allow_output_mutation=True)  # Cache the model to avoid loading it multiple times
-        def load_model():
-            return joblib.load('your_model.pkl')  # Replace 'your_model.pkl' with the path to your .pkl file
-
-        model = load_model()
 
 
     # Select example data
