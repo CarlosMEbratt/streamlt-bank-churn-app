@@ -3,10 +3,20 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 
+
+# MongoDB libraries
 from dotenv import load_dotenv, find_dotenv #Used for import the function to load .env file
 import os
 from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
+
+#S3 libraries
+import streamlit as st
+import joblib
+import numpy as np
+import boto3
+import tempfile
+
 
 #'''Streamlit settings------------------------------------------------------------------------------------------------------------- '''
 
@@ -102,9 +112,10 @@ def login_app():
                         st.session_state.username = ''  # Set username to empty string
                         st.session_state.succesful_login = False  # Set successful_login to False
                         st.session_state.form = ''  # Reset form state
+                        st.sidebar.success('You have successfully registered!')
                         st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
 
-                        st.sidebar.success('You have successfully registered!')
+                        
                         
                         # login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
                         # username = login_form.text_input(label='Enter Username')
@@ -145,13 +156,16 @@ def form_content(username):
     st.header('Input data')
 
     st.markdown('**1. Use custom data**')
-    uploaded_file = st.file_uploader("Upload a CSV file now", type=["csv"])
+    uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
         #df = pd.read_csv(uploaded_file, index_col=False)
-        df = pd.read_csv(secret_name_or_arn="arn:aws:secretsmanager:us-east-2:767397996410:secret:dev/s3/bucket_token-6t6xMP", index_col=False)
+        
+        # Load the saved model
+        @st.cache(allow_output_mutation=True)  # Cache the model to avoid loading it multiple times
+        def load_model():
+            return joblib.load('your_model.pkl')  # Replace 'your_model.pkl' with the path to your .pkl file
 
-        #st.write(df.head())
-        #st.dataframe(data=df, use_container_width=True)
+        model = load_model()
 
 
     # Select example data
