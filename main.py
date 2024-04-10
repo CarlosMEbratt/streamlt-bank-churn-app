@@ -182,8 +182,9 @@ def form_content(username):
     # Button to trigger inference
     if st.button('Predict'):
         # Convert input data to numpy array
-        input_data_np = np.array(df)  # Adjust input data format as needed
         
+        input_data_np = np.array(df)  # Adjust input data format as needed
+
         # Perform inference using the loaded model
         prediction = model.predict(input_data_np)
         
