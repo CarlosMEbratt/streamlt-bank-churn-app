@@ -11,6 +11,9 @@ from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
 
+import boto3
+
+
 #'''Streamlit settings------------------------------------------------------------------------------------------------------------- '''
 
 # Page title
@@ -141,55 +144,50 @@ def form_content(username):
     
     st.header('Input data')
 
-    st.markdown('**1. Use custom data**')
+    st.markdown("**1. Load the clients' data**")
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)      
-        
-
-
-    # Select example data
-    st.markdown('**2. Use example data**')
-
-
-    # Download example data
-    @st.cache_data
-    def convert_df(input_df):
-        return input_df.to_csv(index=False).encode('utf-8')
-    example_csv = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/delaney_solubility_with_descriptors.csv')
-    csv = convert_df(example_csv)
-    st.download_button(
-        label="Download example CSV",
-        data=csv,
-        file_name='delaney_solubility_with_descriptors.csv',
-        mime='text/csv',
-    )
-
 
     
     # Initiate the model building process
     if uploaded_file:  
-        st.subheader('Model building')
-        st.write('Model building in progress...')
+        st.subheader('Processing the data')
+        st.write('Processing in progress...')
 
         # Placeholder for model building process
         with st.spinner('Wait for it...'):
             time.sleep(5)
 
-        st.write('Model building complete!')
-
-        # Display model performance
-        st.subheader('Model Processing')
-        st.write('Building predictions...')
-
-        # Placeholder for model performance metrics
-        with st.spinner('Wait for it...'):
-            time.sleep(3)
-
         #st.write('Customer predictions are now complete!')
-        st.markdown(''':blue[Customer predictions are now complete!]''')
+        st.markdown(''':blue[Customer data has been loaded!]''')
 
         st.dataframe(data=df, use_container_width=True)
+
+    # Select example data
+    st.markdown('**2. Load the saved model**')
+
+    # Load the saved model
+    uploaded_pkl = st.file_uploader("Upload .pkl file", type=["pkl"])
+    # Check if a file is uploaded
+    if uploaded_pkl is not None:
+        st.write("File uploaded successfully!")
+
+        # Load the .pkl file
+        try:
+            # Use pandas to read the .pkl file
+            model = pd.read_pickle(uploaded_file)
+            
+            # # Display the content of the .pkl file
+            # st.write("Content of the .pkl file:")
+            # st.write(df)
+            
+        except Exception as e:
+            st.error(f"Error loading .pkl file: {e}")
+
+    
+    
+
 
 
 
