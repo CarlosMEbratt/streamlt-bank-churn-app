@@ -3,6 +3,7 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 import numpy as np
+import pickle
 
 
 # MongoDB libraries
@@ -25,11 +26,18 @@ st.set_page_config(page_title='Bank Churn App',
 
 @st.cache_resource
 
+# def connect_db():
+#     password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
+#     connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+#     client = MongoClient(connection_string)
+#     db=client["bankchurnapp"]    
+#     return db
+
 def connect_db():
-    password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
-    connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+    # Replace the connection string with the appropriate one for your local MongoDB instance
+    connection_string = "mongodb://localhost:27017/"
     client = MongoClient(connection_string)
-    db=client["bankchurnapp"]    
+    db = client["bankchurnapp"]
     return db
 
 #'''Login App Function------------------------------------------------------------------------------------------------------------- '''
@@ -174,7 +182,10 @@ def form_content(username):
         st.write("File uploaded successfully!")
 
         try:
-            model = pd.read_pickle(uploaded_pkl)
+            # Load the model from the file
+            loaded_model = pd.read_pickle(uploaded_pkl)
+            st.success("Model loaded successfully!")
+
             
         except Exception as e:
             st.error(f"Error loading .pkl file: {e}")
@@ -182,15 +193,17 @@ def form_content(username):
     else:
         st.info("Please upload a .pkl file.")
 
+    
+
     #'''--------------------------------------------------------------------------------------
     st.markdown('**3. Predict churn clients**')
     # Load the saved model
     if st.button('Predict'):
         # # Convert input data to numpy array
-        # input_data_np = np.array(df)  # Adjust input data format as needed
+        input_data_np = np.array(df)  # Adjust input data format as needed
 
         # Perform inference using the loaded model
-        prediction = model.predict(df)
+        prediction = loaded_model.predict(input_data_np)
         df['predictions'] = prediction
         # Display prediction
         st.dataframe(data=prediction, use_container_width=True)
