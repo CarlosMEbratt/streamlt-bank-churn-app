@@ -178,9 +178,6 @@ def form_content(username):
 
         try:
             model = pd.read_pickle(uploaded_pkl)
-            # # Display the content of the .pkl file
-            # st.write("Content of the .pkl file:")
-            # st.write(df)            
             
         except Exception as e:
             st.error(f"Error loading .pkl file: {e}")
@@ -189,16 +186,19 @@ def form_content(username):
         st.info("Please upload a .pkl file.")
 
     #'''--------------------------------------------------------------------------------------
-    # Button to trigger inference
+    st.markdown('**3. Predict churn clients**')
+    # Load the saved model
     if st.button('Predict'):
-        # Convert input data to numpy array
-        input_data_np = np.array(df)  # Adjust input data format as needed
+        # # Convert input data to numpy array
+        # input_data_np = np.array(df)  # Adjust input data format as needed
 
         # Perform inference using the loaded model
-        prediction = model.predict(input_data_np)
-        
+        prediction = model.predict(df)
+        df['predictions'] = prediction
         # Display prediction
-        st.write('Prediction:', prediction)    
+        st.dataframe(data=prediction, use_container_width=True)
+
+
 
 
 #'''Main Function------------------------------------------------------------------------------------------------------------- '''
