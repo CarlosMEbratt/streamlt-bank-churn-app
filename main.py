@@ -2,6 +2,7 @@ import time
 import streamlit as st
 from datetime import datetime
 import pandas as pd
+import numpy as np
 
 
 # MongoDB libraries
@@ -177,6 +178,17 @@ def form_content(username):
             
         except Exception as e:
             st.error(f"Error loading .pkl file: {e}")
+
+    # Button to trigger inference
+    if st.button('Predict'):
+        # Convert input data to numpy array
+        input_data_np = np.array(df)  # Adjust input data format as needed
+        
+        # Perform inference using the loaded model
+        prediction = model.predict(input_data_np)
+        
+        # Display prediction
+        st.write('Prediction:', prediction)    
 
     
     
