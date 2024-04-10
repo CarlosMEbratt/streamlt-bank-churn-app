@@ -178,9 +178,9 @@ def form_content(username):
 
         try:
             model = pd.read_pickle(uploaded_pkl)
-            # Display the content of the .pkl file
-            st.write("Content of the .pkl file:")
-            st.write(df)            
+            # # Display the content of the .pkl file
+            # st.write("Content of the .pkl file:")
+            # st.write(df)            
             
         except Exception as e:
             st.error(f"Error loading .pkl file: {e}")
@@ -200,14 +200,6 @@ def form_content(username):
         # Display prediction
         st.write('Prediction:', prediction)    
 
-    
-    
-
-
-
-
-    
-    
 
 #'''Main Function------------------------------------------------------------------------------------------------------------- '''
     
