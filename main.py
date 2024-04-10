@@ -96,17 +96,19 @@ def login_app():
                                                 'email' : new_user_email, 
                                                 'password' : new_user_pas,
                                                 "creation_time":datetime.now()})
-                        st.sidebar.success('You have successfully registered!')
                         
+
                         # Handle Logout Click
                         st.session_state.username = ''  # Set username to empty string
                         st.session_state.succesful_login = False  # Set successful_login to False
                         st.session_state.form = ''  # Reset form state
-                        st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
+                        #st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
+
+                        st.sidebar.success('You have successfully registered!')
                         
-                        login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
-                        username = login_form.text_input(label='Enter Username')
-                        password = login_form.text_input(label='Enter Password', type='password')
+                        # login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
+                        # username = login_form.text_input(label='Enter Username')
+                        # password = login_form.text_input(label='Enter Password', type='password')
                         
                         del new_user_pas, user_pas_conf                        
     
