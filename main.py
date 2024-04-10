@@ -97,6 +97,7 @@ def login_app():
                                                 'password' : new_user_pas,
                                                 "creation_time":datetime.now()})
                         st.sidebar.success('You have successfully registered!')
+                        st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
                         
                         login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
                         username = login_form.text_input(label='Enter Username')
