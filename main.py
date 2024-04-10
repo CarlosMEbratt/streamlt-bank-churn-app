@@ -5,6 +5,10 @@ import pandas as pd
 import numpy as np
 
 
+# importing xgboost
+import xgboost as xgb
+
+
 # MongoDB libraries
 from dotenv import load_dotenv, find_dotenv #Used for import the function to load .env file
 import os
@@ -142,7 +146,6 @@ def login_app():
 def form_content(username):
     
     st.header('Input data')
-
     st.markdown("**1. Load the clients' data**")
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
@@ -163,9 +166,10 @@ def form_content(username):
 
         st.dataframe(data=df, use_container_width=True)
 
-    # Select example data
-    st.markdown('**2. Load the saved model**')
 
+    #'''--------------------------------------------------------------------------------------
+    
+    st.markdown('**2. Load the saved model**')
     # Load the saved model
     uploaded_pkl = st.file_uploader("Upload .pkl file", type=["pkl"])
 
@@ -185,11 +189,10 @@ def form_content(username):
     else:
         st.info("Please upload a .pkl file.")
 
-
+    #'''--------------------------------------------------------------------------------------
     # Button to trigger inference
     if st.button('Predict'):
         # Convert input data to numpy array
-
         input_data_np = np.array(df)  # Adjust input data format as needed
 
         # Perform inference using the loaded model
