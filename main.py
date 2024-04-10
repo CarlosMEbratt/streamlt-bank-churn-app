@@ -5,8 +5,7 @@ import pandas as pd
 import numpy as np
 
 
-# importing xgboost
-import xgboost as xgb
+
 
 
 # MongoDB libraries
