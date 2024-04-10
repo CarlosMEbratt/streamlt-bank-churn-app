@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np
 
 
-
-
-
 # MongoDB libraries
 from dotenv import load_dotenv, find_dotenv #Used for import the function to load .env file
 import os
