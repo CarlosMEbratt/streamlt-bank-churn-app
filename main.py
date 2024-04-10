@@ -11,8 +11,6 @@ from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
 
-import boto3
-
 
 #'''Streamlit settings------------------------------------------------------------------------------------------------------------- '''
 
