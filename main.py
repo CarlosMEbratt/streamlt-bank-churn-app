@@ -155,7 +155,7 @@ def form_content(username):
 
         # Placeholder for model building process
         with st.spinner('Wait for it...'):
-            time.sleep(5)
+            time.sleep(2)
 
         #st.write('Customer predictions are now complete!')
         st.markdown(''':blue[Customer data has been loaded!]''')
@@ -171,14 +171,9 @@ def form_content(username):
     if uploaded_pkl is not None:
         st.write("File uploaded successfully!")
 
-        # Load the .pkl file
         try:
-            # Use pandas to read the .pkl file
             model = pd.read_pickle(uploaded_file)
             
-            # # Display the content of the .pkl file
-            # st.write("Content of the .pkl file:")
-            # st.write(df)
             
         except Exception as e:
             st.error(f"Error loading .pkl file: {e}")
