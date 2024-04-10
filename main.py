@@ -200,10 +200,10 @@ def form_content(username):
     # Load the saved model
     if st.button('Predict'):
         # # Convert input data to numpy array
-        input_data_np = np.array(df)  # Adjust input data format as needed
+        #input_data_np = np.array(df)  # Adjust input data format as needed
 
         # Perform inference using the loaded model
-        prediction = loaded_model.predict(input_data_np)
+        prediction = loaded_model.predict(df)
         df['predictions'] = prediction
         # Display prediction
         st.dataframe(data=prediction, use_container_width=True)
