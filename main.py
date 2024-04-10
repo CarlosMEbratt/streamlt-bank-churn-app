@@ -10,13 +10,6 @@ import os
 from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
 
-#S3 libraries
-import streamlit as st
-import joblib
-import numpy as np
-import boto3
-import tempfile
-
 
 #'''Streamlit settings------------------------------------------------------------------------------------------------------------- '''
 
