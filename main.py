@@ -168,21 +168,28 @@ def form_content(username):
 
     # Load the saved model
     uploaded_pkl = st.file_uploader("Upload .pkl file", type=["pkl"])
+
     # Check if a file is uploaded
     if uploaded_pkl is not None:
         st.write("File uploaded successfully!")
 
         try:
-            model = pd.read_pickle(uploaded_file)
-            
+            model = pd.read_pickle(uploaded_pkl)
+            # Display the content of the .pkl file
+            st.write("Content of the .pkl file:")
+            st.write(df)            
             
         except Exception as e:
             st.error(f"Error loading .pkl file: {e}")
 
+    else:
+        st.info("Please upload a .pkl file.")
+
+
     # Button to trigger inference
     if st.button('Predict'):
         # Convert input data to numpy array
-        
+
         input_data_np = np.array(df)  # Adjust input data format as needed
 
         # Perform inference using the loaded model
