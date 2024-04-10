@@ -114,6 +114,7 @@ def login_app():
             login = login_form.form_submit_button(label='Sign In', on_click=user_update(username,True))
             if login:
                 st.sidebar.success(f"You are logged in as {username.upper()}")  
+                st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
                 del password
         else:
             login = login_form.form_submit_button(label='Sign In')
