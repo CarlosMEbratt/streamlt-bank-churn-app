@@ -140,7 +140,8 @@ def form_content(username):
     st.markdown('**1. Use custom data**')
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file, index_col=False)
+        #df = pd.read_csv(uploaded_file, index_col=False)
+        df = pd.read_csv(secret_name_or_arn="arn:aws:secretsmanager:us-east-2:767397996410:secret:dev/s3/bucket_token-6t6xMP", index_col=False)
 
         #st.write(df.head())
         #st.dataframe(data=df, use_container_width=True)
@@ -188,6 +189,8 @@ def form_content(username):
         st.markdown(''':blue[Customer predictions are now complete!]''')
 
         st.dataframe(data=df, use_container_width=True)
+
+
 
     
     
