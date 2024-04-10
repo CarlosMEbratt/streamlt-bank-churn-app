@@ -63,6 +63,7 @@ def login_app():
             st.session_state.succesful_login = False  # Set successful_login to False
             st.session_state.form = ''  # Reset form state
             st.sidebar.success("You have successfully logged out!")
+            st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
 
     
 
