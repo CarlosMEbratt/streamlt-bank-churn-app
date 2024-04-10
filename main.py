@@ -26,19 +26,19 @@ st.set_page_config(page_title='Bank Churn App',
 
 @st.cache_resource
 
-# def connect_db():
-#     password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
-#     connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
-#     client = MongoClient(connection_string)
-#     db=client["bankchurnapp"]    
-#     return db
-
 def connect_db():
-    # Replace the connection string with the appropriate one for your local MongoDB instance
-    connection_string = "mongodb://localhost:27017/"
+    password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
+    connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(connection_string)
-    db = client["bankchurnapp"]
+    db=client["bankchurnapp"]    
     return db
+
+# def connect_db():
+#     # Replace the connection string with the appropriate one for your local MongoDB instance
+#     connection_string = "mongodb://localhost:27017/"
+#     client = MongoClient(connection_string)
+#     db = client["bankchurnapp"]
+#     return db
 
 #'''Login App Function------------------------------------------------------------------------------------------------------------- '''
 
