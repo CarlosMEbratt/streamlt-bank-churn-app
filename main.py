@@ -114,7 +114,10 @@ def login_app():
         if credentials_db.find_one({'username' : username, 'password' : password}):
             login = login_form.form_submit_button(label='Sign In', on_click=user_update(username,True))
             if login:
-                st.sidebar.success(f"You are logged in as {username.upper()}")                
+                st.sidebar.success(f"You are logged in as {username.upper()}")     
+
+                with st.spinner('Initializing...'):
+                    time.sleep(2)           
                 
                 del password
         else:
