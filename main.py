@@ -55,8 +55,7 @@ def login_app():
             
     if st.session_state.username != '':
         st.sidebar.markdown(''':blue[You are logged in]''')
-        #st.sidebar.write(f"You are logged in")
-        #st.sidebar.write(f"You are logged in as {st.session_state.username.lower()}")  
+        
         logout = st.sidebar.button(label='Log Out')
         if logout:
             # Handle Logout Click
@@ -202,21 +201,43 @@ def form_content(username):
 
 def main():
     # Initialize Session States.
-    succesful_login=False
-    username, succesful_login=login_app()
+    successful_login=False
+    username, successful_login = login_app()
 
     st.title('Machine Learning App for Bank Churn Prediction')
-    
 
-    if succesful_login == False:        
+    if successful_login == False:
         st.subheader("Please use the sidebar on the left to log in or create an account.")
         st.image('image1.png')
-
     else:
         with st.sidebar:             
             st.header(f"Welcome {username} !")
         
         form_content(username)
+
+    # Move the sign-in form and button inside this conditional block
+    if not successful_login:
+        with st.sidebar:
+            # Render the sign-in form and button only if the user is not logged in
+            login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
+            username = login_form.text_input(label='Enter Username')
+            password = login_form.text_input(label='Enter Password', type='password')
+
+            if credentials_db.find_one({'username' : username, 'password' : password}):
+                login = login_form.form_submit_button(label='Sign In', on_click=user_update(username,True))
+                if login:
+                    st.sidebar.success(f"You are logged in as {username.upper()}")     
+                    del password
+            else:
+                login = login_form.form_submit_button(label='Sign In')
+                if login:
+                    st.sidebar.error("Username or Password is incorrect. Please try again or create an account.")
+
+        # 'Create Account' button
+        signup_request = st.sidebar.button('Create Account', on_click=select_signup)  
+
+
+#'''Sidebar------------------------------------------------------------------------------------------------------------- '''
 
     
     with st.sidebar:
