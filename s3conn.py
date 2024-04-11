@@ -2,6 +2,7 @@ import json
 import boto3
 import botocore
 import pandas as pd
+
 class S3Utils:
     def __init__(self, secret_name_or_arn, file_path=None):
         self.secret_name_or_arn = secret_name_or_arn
@@ -13,7 +14,7 @@ class S3Utils:
         self.s3_client = self.create_s3_client()
 
     def get_aws_credentials_from_secrets_manager(self):
-        client = boto3.client(service_name='secretsmanager', region_name='us-east-2')
+        client = boto3.client(service_name='secretsmanager')
         get_secret_value_response = client.get_secret_value(SecretId=self.secret_name_or_arn)
         secret_dict = json.loads(get_secret_value_response['SecretString'])
         return secret_dict['aws_access_key_id'], secret_dict['aws_secret_access_key'], secret_dict['bucket_name']
@@ -84,9 +85,6 @@ class ConnectToS3:
         self.env = "dev"  # dev, test, staging, prod
         # output file keys for various stages of the pipeline
         self.output_file_key_data_feature_engineering = f'{self.env}/final/bank_data_feature_eng.csv'
-        self.output_file_key_data_model_one_with_imputation = f'{self.env}/final/model_one/bank_churn_data_wi.csv'
-        self.output_file_key_data_model_two_with_imputation = f'{self.env}/final/model_two/bank_churn_data_wi.csv'
-        self.output_file_key_data_model_three_with_imputation = f'{self.env}/final/model_three/bank_churn_data_wi.csv'
         self.output_file_key_data_random_forest_pkl = f'{self.env}/final/model_one/model.pkl'
         self.output_file_key_data_xg_boost_pkl = f'{self.env}/final/model_two/model.pkl'
         self.output_file_key_data_svm_model_pkl = f'{self.env}/final/model_three/model.pkl'
