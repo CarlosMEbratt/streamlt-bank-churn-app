@@ -1,8 +1,8 @@
-streamlit==1.25.0
-streamlit-authenticator==0.2.2
-pymongo==4.3.3
-python-dotenv==0.17.1
-xgboost>=1.4.2
-scikit-learn>=0.24.2
-boto3>=1.18.63
+streamlit
+streamlit-authenticator
+pymongo
+python-dotenv
+xgboost
+scikit-learn
+boto3
 botocore
