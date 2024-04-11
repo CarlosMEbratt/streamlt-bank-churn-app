@@ -1,5 +1,3 @@
-#more stable
-
 import time
 import streamlit as st
 from datetime import datetime
@@ -13,6 +11,9 @@ from dotenv import load_dotenv, find_dotenv #Used for import the function to loa
 import os
 from pymongo import MongoClient #Used to create the connection
 load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
+
+from s3conn import S3Utils, ConnectToS3
+from io import StringIO
 
 
 
@@ -34,6 +35,14 @@ def connect_db():
     client = MongoClient(connection_string)
     db=client["bankchurnapp"]    
     return db
+
+
+# Load the model from the file
+# @st.cache(allow_output_mutation=True)
+def load_model_from_s3(s3_utils, file_key):
+    with s3_utils.get_s3_object(file_key) as f:
+        model = pickle.load(f)
+    return model
 
 # def connect_db():
 #     # Replace the connection string with the appropriate one for your local MongoDB instance
@@ -150,12 +159,28 @@ def login_app():
 
 #'''Funcionality------------------------------------------------------------------------------------------------------------- '''
 def form_content(username):
+
+    connect_to_s3 = ConnectToS3()
     
     st.header('Input data')
     st.markdown("**1. Load the clients' data**")
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file, index_col=False)      
+        df = pd.read_csv(uploaded_file, index_col=False) 
+        
+
+         # Make predictions
+        if connect_to_s3.s3_utils.check_file_exists(connect_to_s3.output_file_key_data_xg_boost_pkl):
+            # Load the model from S3
+            model = load_model_from_s3(connect_to_s3.s3_utils, connect_to_s3.output_file_key_data_xg_boost_pkl)
+            prediction = model.predict(df)
+            
+            df['predictions'] = prediction
+            # Display prediction
+            st.dataframe(data=prediction, use_container_width=True)
+
+        else:
+            st.write("Model file not found in S3.")    
 
     
     # Initiate the model building process
