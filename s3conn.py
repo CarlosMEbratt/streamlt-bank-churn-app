@@ -13,7 +13,7 @@ class S3Utils:
         self.s3_client = self.create_s3_client()
 
     def get_aws_credentials_from_secrets_manager(self):
-        client = boto3.client(service_name='secretsmanager')
+        client = boto3.client(service_name='secretsmanager', region_name='us-east-2')
         get_secret_value_response = client.get_secret_value(SecretId=self.secret_name_or_arn)
         secret_dict = json.loads(get_secret_value_response['SecretString'])
         return secret_dict['aws_access_key_id'], secret_dict['aws_secret_access_key'], secret_dict['bucket_name']
