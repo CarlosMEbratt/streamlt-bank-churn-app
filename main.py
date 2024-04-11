@@ -1,4 +1,5 @@
 import time
+import joblib
 import streamlit as st
 from datetime import datetime
 import pandas as pd
@@ -182,9 +183,14 @@ def form_content(username):
         st.write("File uploaded successfully!")
 
         try:
-            # Load the model from the file
-            loaded_model = pd.read_pickle(uploaded_pkl)
+            # # Load the model from the file using pickle
+            # loaded_model = pd.read_pickle(uploaded_pkl)
+            # st.success("Model loaded successfully!")
+
+            # load model using joblib
+            loaded_model = joblib.load(uploaded_pkl)
             st.success("Model loaded successfully!")
+
 
             
         except Exception as e:
