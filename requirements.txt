@@ -7,3 +7,4 @@ botocore
 scikit-learn
 joblib
 plotly
+smart_open
