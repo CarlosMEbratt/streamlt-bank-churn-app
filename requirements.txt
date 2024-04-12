@@ -2,7 +2,8 @@ streamlit
 streamlit-authenticator
 pymongo
 python-dotenv
-xgboost
-scikit-learn
 boto3
 botocore
+scikit-learn
+joblib
+plotly

@@ -15,13 +15,119 @@ import hashlib
 import json
 import re
 
+def is_valid_email(email):
+    return re.match(r"[^@]+@[^@]+\.[^@]+", email) is not None
 
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
 
-# MongoDB libraries
-from dotenv import load_dotenv, find_dotenv #Used for import the function to load .env file
-import os
-from pymongo import MongoClient #Used to create the connection
-load_dotenv(find_dotenv()) #Shorcut to load the enviroment file
+def save_users(users):
+    with open('users.json', 'w') as f:
+        json.dump(users, f)
+
+def load_users():
+    try:
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+    except FileNotFoundError:
+        users = {}
+    return users
+
+def signup(email, password, full_name):
+    users = load_users()
+    if not is_valid_email(email):
+        return False, "Please enter a valid email address."
+    if email in users:
+        return False, "An account with this email already exists."
+    users[email] = {'password': hash_password(password), 'full_name': full_name}
+    save_users(users)
+    return True, "Account created successfully."
+
+def login(email, password):
+    users = load_users()
+    if email in users and users[email]['password'] == hash_password(password):
+        return True, users[email]['full_name']
+    return False, ""
+
+def reset_password(email, new_password):
+    users = load_users()
+    if email in users:
+        users[email]['password'] = hash_password(new_password)
+        save_users(users)
+        return True, "Password reset successful."
+    return False, "This email does not exist."
+
+def navigate_to_signup():
+    st.session_state['page'] = 'signup'
+    st.experimental_rerun()
+
+def navigate_to_reset_password():
+    st.session_state['page'] = 'reset_password'
+    
+
+def navigate_to_login():
+    st.session_state['page'] = 'login'
+    st.experimental_rerun()
+
+def main():
+    st.sidebar.title("Bank Churn Prediction App")
+
+    if 'page' not in st.session_state:
+        st.session_state['page'] = 'login'
+
+    if 'authenticated' not in st.session_state:
+        st.session_state['authenticated'] = False
+
+    if not st.session_state['authenticated']:
+        if st.session_state['page'] == 'login':
+            email = st.sidebar.text_input("Email address", placeholder="Email")
+            password = st.sidebar.text_input("Password", type="password")
+            if st.sidebar.button("Log in"):
+                authenticated, full_name = login(email, password)
+                if authenticated:
+                    st.session_state['authenticated'] = True
+                    st.session_state['full_name'] = full_name
+                else:
+                    st.sidebar.error("Email or password is incorrect.")
+                    st.sidebar.button("Forgot password?", on_click=navigate_to_reset_password)
+
+            if st.sidebar.button("Don't have an account? Sign up"):
+                navigate_to_signup()
+
+        elif st.session_state['page'] == 'signup':
+            new_email = st.sidebar.text_input("Email address", placeholder="Email")
+            new_full_name = st.sidebar.text_input("Full Name", placeholder="Full Name")
+            new_password = st.sidebar.text_input("Password", type="password")
+            if st.sidebar.button("Sign up"):
+                success, message = signup(new_email, new_password, new_full_name)
+                if success:
+                    st.sidebar.success(message)
+                    navigate_to_login()
+                else:
+                    st.sidebar.error(message)
+
+        elif st.session_state['page'] == 'reset_password':
+            reset_email = st.sidebar.text_input("Email address", placeholder="Enter your email")
+            new_password = st.sidebar.text_input("New Password", type="password")
+            if st.sidebar.button("Reset Password"):
+                success, message = reset_password(reset_email, new_password)
+                if success:
+                    st.sidebar.success(message + " Please log in with your new password.")
+                    navigate_to_login()
+                else:
+                    st.sidebar.error(message)
+                    st.sidebar.button("Create an Account", on_click=navigate_to_signup)
+    else:
+        st.sidebar.write(f"Hello, {st.session_state['full_name']}!")
+        if st.sidebar.button("Logout"):
+            st.session_state['authenticated'] = False
+            st.session_state.pop('full_name', None)
+            navigate_to_login()
+
+    if st.session_state.get('authenticated', False):
+        st.image('/workspaces/BankChurnPrediction/group3.png', width=600)
+    else:
+        st.write("Please log in to see the dashboard.")
 
 
 
@@ -95,23 +201,6 @@ def navigate_to_reset_password():
 def navigate_to_login():
     st.session_state['page'] = 'login'
     st.rerun()
-    
-# Create a Function to Draw the Donut Chart
-def draw_donut_chart(churn_rate):
-    fig, ax = plt.subplots()
-    size = 0.3
-    vals = [churn_rate, 100 - churn_rate]
-
-    ax.pie(vals, radius=1, wedgeprops=dict(width=size, edgecolor='w'))
-
-    ax.set(aspect="equal")
-    plt.text(-0.05, 0, f'{churn_rate}%', ha='center', va='center', fontsize=12)
-    return fig
-
-# Define a function to handle customer ID click
-def handle_customer_click(customer_id):
-    st.session_state['selected_customer_id'] = customer_id
-    st.session_state['navigation'] = 'customer_detail'
 
 # Main function where the Streamlit app logic is defined
 def main():
@@ -177,15 +266,7 @@ def main():
                 if message == "This email does not exist." and st.button("Create an Account"):
                     navigate_to_signup()
 
-# Sidebar navigation
-with st.sidebar:
-    if st.button('Home'):
-        st.session_state['navigation'] = 'home'
-    if st.button('Reports'):
-        st.session_state['navigation'] = 'reports'
-    if st.button('Profile'):
-        st.session_state['navigation'] = 'profile'
-        
+
 #'''Funcionality------------------------------------------------------------------------------------------------------------- '''
 def form_content(username):
     connect_to_s3 = ConnectToS3()
@@ -197,85 +278,6 @@ def form_content(username):
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
         input_data = pd.DataFrame(df)
-        
-        # Initiate the model building process
-        if uploaded_file:  
-            st.subheader('Processing the data')
-            st.write('Processing in progress...')
-
-            # Placeholder for model building process
-            with st.spinner('Wait for it...'):
-                time.sleep(2)
-
-            #st.write('Customer predictions are now complete!')
-            st.markdown(''':blue[Customer data has been loaded!]''')
-
-            # st.dataframe(data=df, use_container_width=True)
-            
-            #'''--------------------------------------------------------------------------------------
-            st.markdown('**3. Predict churn clients**')
-            # Load the saved model
-            if st.button('Predict'):
-                # # Convert input data to numpy array
-                #input_data_np = np.array(df)  # Adjust input data format as needed
-
-            # Make predictions local this is working on local mode
-                model = joblib.load('model.pkl')
-                #Predict the data
-                predictions = model.predict(input_data)
-                
-                # Make predictions s3
-                # if connect_to_s3.s3_utils.check_file_exists(connect_to_s3.output_file_key_data_random_forest_pkl):
-                # # Load the model directly from S3
-                #     model = connect_to_s3.load_model_from_s3(connect_to_s3.output_file_key_data_random_forest_pkl)
-
-                #     predictions = model.predict(input_data)
-                #     st.write("Model file not found in S3.")
-                #     for index, row in input_data.iterrows():
-                #         first_feature_name = row.index[0]  # Get the name of the first feature
-                #         first_feature_value = row[0]  # Get the value of the first feature
-                #         st.write(f'First Feature: {first_feature_name}: {first_feature_value} -> Prediction: {predictions[index]}')
-                # else:
-                #     st.write("Model file not found in S3.")
-
-                
-            
-                data = []
-                for index, row in input_data.iterrows():
-                    id_value = row.iloc[0]  # Use .iloc to get the ID value by position
-                    prediction = predictions[index]  # Get the prediction value
-
-                    # Append the data to the list
-                    data.append({
-                        'ID': id_value,
-                        'Prediction': prediction
-                    })
-                predicted_df = pd.DataFrame(data)
-                
-                #'''--------------------------------------------------------------------------------------
-                # Main page content based on navigation state
-                if st.session_state['navigation'] == 'home':
-                    st.title("Churn Rate Dashboard")
-                    churn_rate = 15  # Assumption
-                    donut_chart = draw_donut_chart(churn_rate)
-                    st.pyplot(donut_chart)
-
-                    st.subheader("Customers Likely to Churn")
-                    for index, row in predicted_df.iterrows():
-                        if st.button(f"Customer ID: {row['ID']} - Predicted Churn: {row['Prediction']}"):
-                            handle_customer_click(row['ID'])
-                    
-                
-                # elif st.session_state['navigation'] == 'customer_detail':
-                #     st.write(f"Details for customer ID: {st.session_state['selected_customer_id']}")
-
-                # elif st.session_state['navigation'] == 'reports':
-                #     st.write("Reports Page Content")
-
-                # elif st.session_state['navigation'] == 'profile':
-                #     st.write("Profile Page Content")
-        
-
     
     # Select example data
     st.markdown('**2. Use example data**')
@@ -296,7 +298,20 @@ def form_content(username):
         mime='text/csv',
     )
     
-    
+    # Initiate the model building process
+    if uploaded_file:  
+        st.subheader('Processing the data')
+        st.write('Processing in progress...')
+
+        # Placeholder for model building process
+        with st.spinner('Wait for it...'):
+            time.sleep(2)
+
+        #st.write('Customer predictions are now complete!')
+        st.markdown(''':blue[Customer data has been loaded!]''')
+
+        # st.dataframe(data=df, use_container_width=True)
+
 
     #'''--------------------------------------------------------------------------------------
     
@@ -322,7 +337,49 @@ def form_content(username):
 
     
 
-    
+    #'''--------------------------------------------------------------------------------------
+    st.markdown('**3. Predict churn clients**')
+    # Load the saved model
+    if st.button('Predict'):
+        # # Convert input data to numpy array
+        #input_data_np = np.array(df)  # Adjust input data format as needed
+
+       # Make predictions local
+        model = joblib.load('model.pkl')
+        predictions = model.predict(input_data)
+        
+        data = []
+        for index, row in input_data.iterrows():
+            id_value = row[0]  # Get the ID value
+            prediction = predictions[index] # Get the prediction value
+
+            # Append the data to the list
+            data.append({
+                'ID': id_value,
+                'Prediction': prediction
+            })
+        predicted_df = pd.DataFrame(data)
+        
+         # #'''--------------------------------------------------------------------------------------
+
+        # st.title("Class Distribution Pie Chart")
+
+        # # Count class occurrences (assuming unique class labels)
+        # class_counts = prediction['value'].value_counts().reset_index()
+        # class_counts.columns = ['Class', 'Count']
+
+        # # Display data (optional)
+        # st.header("Data")
+        # st.predicted_df(class_counts)  # Display class counts instead of full data
+
+        # # Create the pie chart
+        # fig = px.pie(class_counts, values='Count', names='Class', title='Distribution of Classes')
+
+        # # Display the chart
+        # st.plotly_chart(fig)
+        
+
+   
 
 
 #'''Main Function------------------------------------------------------------------------------------------------------------- '''
@@ -330,23 +387,21 @@ def form_content(username):
 
 def main():
     # Initialize Session States.
-    # succesful_login=False
-    # username, succesful_login=login_app()
+    succesful_login=False
+    username, succesful_login=login_app()
 
-    # st.title('Machine Learning App for Bank Churn Prediction')
+    st.title('Machine Learning App for Bank Churn Prediction')
     
 
-    # if succesful_login == False:        
-    #     st.subheader("Please use the sidebar on the left to log in or create an account.")
-    #     st.image('image1.png')
+    if succesful_login == False:        
+        st.subheader("Please use the sidebar on the left to log in or create an account.")
+        st.image('image1.png')
 
-    # else:
-    #     with st.sidebar:             
-    #         st.header(f"Welcome {username} !")
+    else:
+        with st.sidebar:             
+            st.header(f"Welcome {username} !")
         
-    #     form_content(username)
-    
-    form_content('Prescila')
+        form_content(username)
 
 
 #'''Sidebar------------------------------------------------------------------------------------------------------------- '''
@@ -376,4 +431,6 @@ def main():
 
 # Call the main function
 if __name__ == '__main__':
+    main()
+if __name__ == "__main__":
     main()
