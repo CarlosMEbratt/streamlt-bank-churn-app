@@ -4,17 +4,6 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 import pickle
-import plotly.express as px
-from io import StringIO
-import os
-import joblib
-import boto3
-import botocore
-from s3conn import S3Utils, ConnectToS3
-import hashlib
-import json
-import re
-
 
 
 # MongoDB libraries
@@ -32,297 +21,194 @@ st.set_page_config(page_title='Bank Churn App',
                    page_icon='🤖', layout="wide", 
                    initial_sidebar_state="expanded")
 
-#'''Login Page------------------------------------------------------------------------------------------------------------- '''
 
-# Validate the email format
-def is_valid_email(email):
-    return re.match(r"[^@]+@[^@]+\.[^@]+", email) is not None
+#'''Connect to the DB------------------------------------------------------------------------------------------------------------- '''
 
-# Hash the password for secure storage
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+@st.cache_resource
 
-# Save the user dictionary to a JSON file
-def save_users(users):
-    with open('users.json', 'w') as f:
-        json.dump(users, f)
+def connect_db():
+    password = os.environ.get("MONGODB_PWD") #This is to grab the password from the .env file
+    connection_string = f"mongodb+srv://carlosmebratt:{password}@bdm1003.tnmvwtl.mongodb.net/?retryWrites=true&w=majority"
+    client = MongoClient(connection_string)
+    db=client["bankchurnapp"]    
+    return db
 
-# Load users from the JSON file, returning an empty dict if the file doesn't exist
-def load_users():
-    try:
-        with open('users.json', 'r') as f:
-            users = json.load(f)
-    except FileNotFoundError:
-        users = {}
-    return users
+# def connect_db():
+#     # Replace the connection string with the appropriate one for your local MongoDB instance
+#     connection_string = "mongodb://localhost:27017/"
+#     client = MongoClient(connection_string)
+#     db = client["bankchurnapp"]
+#     return db
 
-# Register a new user, ensuring no duplicate emails
-def signup(email, password, full_name):
-    users = load_users()
-    if not is_valid_email(email):
-        return False, "Please enter a valid email address."
-    if email in users:
-        return False, "An account with this email already exists."
-    users[email] = {'password': hash_password(password), 'full_name': full_name}
-    save_users(users)
-    return True, "Account created successfully."
+#'''Login App Function------------------------------------------------------------------------------------------------------------- '''
 
-# Authenticate a user based on email and password
-def login(email, password):
-    users = load_users()
-    if email in users and users[email]['password'] == hash_password(password):
-        return True, users[email]['full_name']
-    return False, ""
+def select_signup():
+    st.session_state.form = 'signup_form'
 
-# Reset the user's password if the email exists
-def reset_password(email, new_password):
-    users = load_users()
-    if email in users:
-        users[email]['password'] = hash_password(new_password)
-        save_users(users)
-        return True, "Password reset successful."
-    return False, "This email does not exist."
-
-# Functions to handle navigation
-def navigate_to_signup():
-    st.session_state['page'] = 'signup'
-    st.rerun()
-
-def navigate_to_reset_password():
-    st.session_state['page'] = 'reset_password'
-    st.rerun()
-
-def navigate_to_login():
-    st.session_state['page'] = 'login'
-    st.rerun()
+def user_update(name, succesful_login):
+    st.session_state.username = name
+    st.session_state.succesful_login=succesful_login
     
-# Create a Function to Draw the Donut Chart
-def draw_donut_chart(churn_rate):
-    fig, ax = plt.subplots()
-    size = 0.3
-    vals = [churn_rate, 100 - churn_rate]
+def update_succesful_login(succesful_login):
+    st.session_state.succesful_login=succesful_login
 
-    ax.pie(vals, radius=1, wedgeprops=dict(width=size, edgecolor='w'))
+def login_app():
+    db = connect_db()
+    credentials_db=db["credentials"]
 
-    ax.set(aspect="equal")
-    plt.text(-0.05, 0, f'{churn_rate}%', ha='center', va='center', fontsize=12)
-    return fig
+    
+    # Initialize Session States.
+    if 'username' not in st.session_state:
+        st.session_state.username = ''
+    if 'form' not in st.session_state:
+        st.session_state.form = ''
 
-# Define a function to handle customer ID click
-def handle_customer_click(customer_id):
-    st.session_state['selected_customer_id'] = customer_id
-    st.session_state['navigation'] = 'customer_detail'
-
-# Main function where the Streamlit app logic is defined
-def main():
-    st.title("Bank Churn Prediction App")
-
-    # Initialize session state for page navigation and login attempts
-    if 'page' not in st.session_state:
-        st.session_state['page'] = 'login'
-    if 'login_attempt_failed' not in st.session_state:
-        st.session_state['login_attempt_failed'] = False
-
-    # Login page
-    if st.session_state['page'] == 'login':
-        email = st.text_input("Email address", placeholder="Email")
-        password = st.text_input("Password", type="password")
-        if st.button("Log in"):
-            authenticated, full_name = login(email, password)
-            if authenticated:
-                st.success(f"Welcome back, {full_name}!")
-            else:
-                st.error("Email or password is incorrect.")
-                st.session_state['login_attempt_failed'] = True
-
-        if st.session_state['login_attempt_failed'] and st.button("Forgot password?"):
-            navigate_to_reset_password()
-
-        if st.button("Don't have an account? Sign up"):
-            navigate_to_signup()
-
-    # Signup page
-    elif st.session_state['page'] == 'signup':
-        new_email = st.text_input("Email address", placeholder="Email")
-        new_full_name = st.text_input("Full Name", placeholder="Full Name")
-        new_password = st.text_input("Password", type="password")
-
-        if st.button("Sign up"):
-            success, message = signup(new_email, new_password, new_full_name)
-            if success:
-                st.success(message)
-                navigate_to_login()
-            else:
-                st.error(message)
-                if message == "An account with this email already exists.":
-                    # Trigger navigation using session state change instead of button
-                    st.session_state['navigate_to_login'] = True
-                    st.session_state['signup_attempted'] = False  # Reset the signup attempt flag
-
-        if 'navigate_to_login' in st.session_state and st.session_state['navigate_to_login']:
-            navigate_to_login()
-
-    # Password reset page
-    elif st.session_state['page'] == 'reset_password':
-        reset_email = st.text_input("Email address", placeholder="Enter your email")
-        new_password = st.text_input("New Password", type="password")
-
-        if st.button("Reset Password"):
-            success, message = reset_password(reset_email, new_password)
-            if success:
-                st.success(message + " Please log in with your new password.")
-                navigate_to_login()
-            else:
-                st.error(message)
-                if message == "This email does not exist." and st.button("Create an Account"):
-                    navigate_to_signup()
-
-# Sidebar navigation
-with st.sidebar:
-    if st.button('Home'):
-        st.session_state['navigation'] = 'home'
-    if st.button('Reports'):
-        st.session_state['navigation'] = 'reports'
-    if st.button('Profile'):
-        st.session_state['navigation'] = 'profile'
+    if 'succesful_login' not in st.session_state:
+        st.session_state.succesful_login = False    
+            
+    if st.session_state.username != '':
+        st.sidebar.markdown(''':blue[You are logged in]''')
         
+        logout = st.sidebar.button(label='Log Out')
+        if logout:
+            # Handle Logout Click
+            st.session_state.username = ''  # Set username to empty string
+            st.session_state.succesful_login = False  # Set successful_login to False
+            st.session_state.form = ''  # Reset form state
+            st.sidebar.success("You have successfully logged out!")
+            st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
+
+    
+
+    # Initialize Sing In or Sign Up forms
+    if st.session_state.form == 'signup_form' and st.session_state.username == '':
+
+    
+        signup_form = st.sidebar.form(key='signup_form', clear_on_submit=True)
+        new_username = signup_form.text_input(label='Enter Username*')
+        new_user_email = signup_form.text_input(label='Enter Email Address*')
+        new_user_pas = signup_form.text_input(label='Enter Password*', type='password')
+        user_pas_conf = signup_form.text_input(label='Confirm Password*', type='password')
+        note = signup_form.markdown('**required fields*')
+        signup = signup_form.form_submit_button(label='Sign Up')
+        
+        if signup:
+            if '' in [new_username, new_user_email, new_user_pas]:
+                st.sidebar.error('Some fields are missing')
+            else:
+                if credentials_db.find_one({'username' : new_username}):
+                    st.sidebar.error('This username already exists')
+                if credentials_db.find_one({'email' : new_user_email}):
+                    st.sidebar.error('This e-mail is already registered')
+                else:
+                    if new_user_pas != user_pas_conf:
+                        st.sidebar.error('Passwords do not match')
+                    else:
+                        user_update(new_username,True)
+                        credentials_db.insert_one({'username' : new_username, 
+                                                'email' : new_user_email, 
+                                                'password' : new_user_pas,
+                                                "creation_time":datetime.now()})
+                        
+
+                        # Handle Logout Click
+                        st.session_state.username = ''  # Set username to empty string
+                        st.session_state.succesful_login = False  # Set successful_login to False
+                        st.session_state.form = ''  # Reset form state
+                        st.sidebar.success('You have successfully registered!')
+                        st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
+                 
+    
+    
+    elif st.session_state.username == '':
+        login_form = st.sidebar.form(key='signin_form', clear_on_submit=True)
+        username = login_form.text_input(label='Enter Username')
+        password = login_form.text_input(label='Enter Password', type='password')        
+        
+
+        if credentials_db.find_one({'username' : username, 'password' : password}):
+            login = login_form.form_submit_button(label='Sign In', on_click=user_update(username,True))
+            if login:
+                st.sidebar.success(f"You are logged in as {username.upper()}")  
+                st.experimental_rerun() #This is to refresh the page and get rid of the username and password fields from the sidebar
+                del password
+        else:
+            login = login_form.form_submit_button(label='Sign In')
+            if login:
+                st.sidebar.error("Username or Password is incorrect. Please try again or create an account.")
+        
+
+    # 'Create Account' button
+    if st.session_state.username == "" and st.session_state.form != 'signup_form':
+        signup_request = st.sidebar.button('Create Account', on_click=select_signup)  
+    
+    return st.session_state.username, st.session_state.succesful_login
+
+
+
 #'''Funcionality------------------------------------------------------------------------------------------------------------- '''
 def form_content(username):
-    connect_to_s3 = ConnectToS3()
     
     st.header('Input data')
     st.markdown("**1. Load the clients' data**")
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-    
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file, index_col=False)
-        input_data = pd.DataFrame(df)
-        
-        # Initiate the model building process
-        if uploaded_file:  
-            st.subheader('Processing the data')
-            st.write('Processing in progress...')
-
-            # Placeholder for model building process
-            with st.spinner('Wait for it...'):
-                time.sleep(2)
-
-            #st.write('Customer predictions are now complete!')
-            st.markdown(''':blue[Customer data has been loaded!]''')
-
-            # st.dataframe(data=df, use_container_width=True)
-            
-            #'''--------------------------------------------------------------------------------------
-            st.markdown('**3. Predict churn clients**')
-            # Load the saved model
-            if st.button('Predict'):
-                # # Convert input data to numpy array
-                #input_data_np = np.array(df)  # Adjust input data format as needed
-
-            # Make predictions local this is working on local mode
-                model = joblib.load('model.pkl')
-                #Predict the data
-                predictions = model.predict(input_data)
-                
-                # Make predictions s3
-                # if connect_to_s3.s3_utils.check_file_exists(connect_to_s3.output_file_key_data_random_forest_pkl):
-                # # Load the model directly from S3
-                #     model = connect_to_s3.load_model_from_s3(connect_to_s3.output_file_key_data_random_forest_pkl)
-
-                #     predictions = model.predict(input_data)
-                #     st.write("Model file not found in S3.")
-                #     for index, row in input_data.iterrows():
-                #         first_feature_name = row.index[0]  # Get the name of the first feature
-                #         first_feature_value = row[0]  # Get the value of the first feature
-                #         st.write(f'First Feature: {first_feature_name}: {first_feature_value} -> Prediction: {predictions[index]}')
-                # else:
-                #     st.write("Model file not found in S3.")
-
-                
-            
-                data = []
-                for index, row in input_data.iterrows():
-                    id_value = row.iloc[0]  # Use .iloc to get the ID value by position
-                    prediction = predictions[index]  # Get the prediction value
-
-                    # Append the data to the list
-                    data.append({
-                        'ID': id_value,
-                        'Prediction': prediction
-                    })
-                predicted_df = pd.DataFrame(data)
-                
-                #'''--------------------------------------------------------------------------------------
-                # Main page content based on navigation state
-                if st.session_state['navigation'] == 'home':
-                    st.title("Churn Rate Dashboard")
-                    churn_rate = 15  # Assumption
-                    donut_chart = draw_donut_chart(churn_rate)
-                    st.pyplot(donut_chart)
-
-                    st.subheader("Customers Likely to Churn")
-                    for index, row in predicted_df.iterrows():
-                        if st.button(f"Customer ID: {row['ID']} - Predicted Churn: {row['Prediction']}"):
-                            handle_customer_click(row['ID'])
-                    
-                
-                # elif st.session_state['navigation'] == 'customer_detail':
-                #     st.write(f"Details for customer ID: {st.session_state['selected_customer_id']}")
-
-                # elif st.session_state['navigation'] == 'reports':
-                #     st.write("Reports Page Content")
-
-                # elif st.session_state['navigation'] == 'profile':
-                #     st.write("Profile Page Content")
-        
+        df = pd.read_csv(uploaded_file, index_col=False)      
 
     
-    # Select example data
-    st.markdown('**2. Use example data**')
-    # # Download example data
-    @st.cache_data
-    def convert_df(input_df):
-        return input_df.to_csv(index=False).encode('utf-8')
-    
-    # Get the csv/dataset from S3
-    if connect_to_s3.s3_utils.check_file_exists(connect_to_s3.output_file_key_data_feature_engineering):
-        example_csv = connect_to_s3.s3_utils.read_csv_from_s3(connect_to_s3.output_file_key_data_feature_engineering)
-        csv = convert_df(example_csv)
+    # Initiate the model building process
+    if uploaded_file:  
+        st.subheader('Processing the data')
+        st.write('Processing in progress...')
 
-    st.download_button(
-        label="Download example CSV",
-        data=csv, 
-        file_name='bank_churn_dataset.csv',
-        mime='text/csv',
-    )
-    
-    
+        # Placeholder for model building process
+        with st.spinner('Wait for it...'):
+            time.sleep(2)
+
+        #st.write('Customer predictions are now complete!')
+        st.markdown(''':blue[Customer data has been loaded!]''')
+
+        st.dataframe(data=df, use_container_width=True)
+
 
     #'''--------------------------------------------------------------------------------------
     
-    # st.markdown('**2. Load the saved model**')
-    # # Load the saved model
-    # uploaded_pkl = st.file_uploader("Upload .pkl file", type=["pkl"])
+    st.markdown('**2. Load the saved model**')
+    # Load the saved model
+    uploaded_pkl = st.file_uploader("Upload .pkl file", type=["pkl"])
 
-    # # Check if a file is uploaded
-    # if uploaded_pkl is not None:
-    #     st.write("File uploaded successfully!")
+    # Check if a file is uploaded
+    if uploaded_pkl is not None:
+        st.write("File uploaded successfully!")
 
-    #     try:
-    #         # Load the model from the file
-    #         loaded_model = pd.read_pickle(uploaded_pkl)
-    #         st.success("Model loaded successfully!")
+        try:
+            # Load the model from the file
+            loaded_model = pd.read_pickle(uploaded_pkl)
+            st.success("Model loaded successfully!")
 
             
-    #     except Exception as e:
-    #         st.error(f"Error loading .pkl file: {e}")
+        except Exception as e:
+            st.error(f"Error loading .pkl file: {e}")
 
-    # else:
-    #     st.info("Please upload a .pkl file.")
-
-    
+    else:
+        st.info("Please upload a .pkl file.")
 
     
+
+    #'''--------------------------------------------------------------------------------------
+    st.markdown('**3. Predict churn clients**')
+    # Load the saved model
+    if st.button('Predict'):
+        # # Convert input data to numpy array
+        #input_data_np = np.array(df)  # Adjust input data format as needed
+
+        # Perform inference using the loaded model
+        prediction = loaded_model.predict(df)
+        df['predictions'] = prediction
+        # Display prediction
+        st.dataframe(data=prediction, use_container_width=True)
+
+
 
 
 #'''Main Function------------------------------------------------------------------------------------------------------------- '''
@@ -330,23 +216,21 @@ def form_content(username):
 
 def main():
     # Initialize Session States.
-    # succesful_login=False
-    # username, succesful_login=login_app()
+    succesful_login=False
+    username, succesful_login=login_app()
 
-    # st.title('Machine Learning App for Bank Churn Prediction')
+    st.title('Machine Learning App for Bank Churn Prediction')
     
 
-    # if succesful_login == False:        
-    #     st.subheader("Please use the sidebar on the left to log in or create an account.")
-    #     st.image('image1.png')
+    if succesful_login == False:        
+        st.subheader("Please use the sidebar on the left to log in or create an account.")
+        st.image('image1.png')
 
-    # else:
-    #     with st.sidebar:             
-    #         st.header(f"Welcome {username} !")
+    else:
+        with st.sidebar:             
+            st.header(f"Welcome {username} !")
         
-    #     form_content(username)
-    
-    form_content('Prescila')
+        form_content(username)
 
 
 #'''Sidebar------------------------------------------------------------------------------------------------------------- '''
